@@ -1,0 +1,17 @@
+{
+  "presets": ["module:metro-react-native-babel-preset", "module:react-native-dotenv"],
+  "plugins": [
+    [
+      "react-native-stylename-to-style",
+      {
+        "extensions": ["scss", "sass"]
+      }
+    ],
+    [
+      "react-native-platform-specific-extensions",
+      {
+        "extensions": ["css"]
+      }
+    ]
+  ]
+}

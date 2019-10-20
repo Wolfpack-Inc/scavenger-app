@@ -69,7 +69,8 @@ class Map extends Component {
                             key={index} 
                             longitude={suggestion.longitude} 
                             latitude={suggestion.latitude}
-                            image={suggestion.url}/>
+                            image={suggestion.url}
+                            radius={suggestion.radius}/>
                     )}
                     <PersonMarker location={currentLocation}/>
                 </MapView> 

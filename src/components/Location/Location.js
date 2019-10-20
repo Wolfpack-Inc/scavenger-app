@@ -34,7 +34,7 @@ export class Location extends Component {
         }, (error) => {
             console.warn(error)
         }, {
-            timeout: 1000,
+            timeout: 1500,
             enableHighAccuracy: true
         });
          

@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import MapView from 'react-native-maps';
 
 import PersonMarker from 'src/components/PersonMarker/PersonMarker';
+import ImageMarker from 'src/components/ImageMarker/ImageMarker';
 
 class Map extends Component {
     constructor() {
@@ -17,26 +18,36 @@ class Map extends Component {
         if(!prevProps.currentLocation && this.props.currentLocation) {
             // Add a small timeout in order to fix a bug that map is not loaded yet
             setTimeout(() => {
-                this.centerOn(this.props.currentLocation)
+                this.centerOn(this.props.currentLocation, 0.01)
+            }, 10);
+        }
+
+        // Center on a suggestion location when the user swipes the suggestion drawer
+        if(prevProps.currentSuggestionCard != this.props.currentSuggestionCard) {
+            // Add a small timeout in order to fix a bug that map is not loaded yet
+            setTimeout(() => {
+                console.log(this.props.suggestions[this.props.currentSuggestionCard]);
+                
+                this.centerOn(this.props.suggestions[this.props.currentSuggestionCard], 0, 0.04)
             }, 10);
         }
     }
 
-    centerOn(location) {
+    centerOn(location, offset=0, delta=0.08) {
         const { longitude, latitude } = location;
         
         // Animate to the center
         this.map.animateToRegion({
-            latitude: latitude - 0.01,
+            latitude: latitude - offset,
             longitude,
-            latitudeDelta: 0.08,
-            longitudeDelta: 0.08
+            latitudeDelta: delta,
+            longitudeDelta: delta
         });
         
     }
 
     render() {
-        const { currentLocation } = this.props;
+        const { currentLocation, suggestions } = this.props;
 
         return (
             <View>
@@ -53,6 +64,13 @@ class Map extends Component {
                         longitudeDelta: 0.0421,
                     }}
                 >
+                    { suggestions.map((suggestion, index) => 
+                        <ImageMarker 
+                            key={index} 
+                            longitude={suggestion.longitude} 
+                            latitude={suggestion.latitude}
+                            image={suggestion.url}/>
+                    )}
                     <PersonMarker location={currentLocation}/>
                 </MapView> 
             </View>
@@ -68,88 +86,37 @@ const mapStyle = [
         "elementType": "labels",
         "stylers": [
             {
-                "visibility": "on"
-            }
-        ]
-    },
-    {
-        "featureType": "all",
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "saturation": 36
+                "gamma": 0.26
             },
-            {
-                "color": "#000000"
-            },
-            {
-                "lightness": 40
-            }
-        ]
-    },
-    {
-        "featureType": "all",
-        "elementType": "labels.text.stroke",
-        "stylers": [
-            {
-                "visibility": "on"
-            },
-            {
-                "color": "#000000"
-            },
-            {
-                "lightness": 16
-            }
-        ]
-    },
-    {
-        "featureType": "all",
-        "elementType": "labels.icon",
-        "stylers": [
             {
                 "visibility": "off"
             }
         ]
     },
     {
-        "featureType": "administrative",
-        "elementType": "geometry.fill",
+        "featureType": "administrative.province",
+        "elementType": "all",
         "stylers": [
             {
-                "color": "#000000"
+                "visibility": "off"
             },
+            {
+                "lightness": -50
+            }
+        ]
+    },
+    {
+        "featureType": "administrative.province",
+        "elementType": "labels.text",
+        "stylers": [
             {
                 "lightness": 20
             }
         ]
     },
     {
-        "featureType": "administrative",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "color": "#000000"
-            },
-            {
-                "lightness": 17
-            },
-            {
-                "weight": 1.2
-            }
-        ]
-    },
-    {
-        "featureType": "administrative.country",
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "color": "#e5c163"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative.locality",
-        "elementType": "all",
+        "featureType": "administrative.province",
+        "elementType": "labels.text.stroke",
         "stylers": [
             {
                 "visibility": "off"
@@ -158,100 +125,94 @@ const mapStyle = [
     },
     {
         "featureType": "administrative.locality",
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "color": "#c4c4c4"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative.neighborhood",
         "elementType": "all",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
             }
         ]
     },
     {
-        "featureType": "administrative.neighborhood",
+        "featureType": "administrative.locality",
         "elementType": "labels.text.fill",
         "stylers": [
             {
-                "color": "#e5c163"
+                "color": "#8b94aa"
+            },
+            {
+                "visibility": "on"
             }
         ]
     },
     {
         "featureType": "landscape",
-        "elementType": "geometry",
+        "elementType": "all",
         "stylers": [
             {
-                "color": "#000000"
-            },
+                "color": "#f3f7fa"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.man_made",
+        "elementType": "geometry.fill",
+        "stylers": [
             {
-                "lightness": 20
+                "color": "#f3f7fa"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.natural.landcover",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#f3f7fa"
             }
         ]
     },
     {
         "featureType": "poi",
-        "elementType": "geometry",
+        "elementType": "all",
         "stylers": [
             {
-                "color": "#000000"
-            },
-            {
-                "lightness": 21
-            },
-            {
-                "visibility": "on"
+                "visibility": "off"
             }
         ]
     },
     {
-        "featureType": "poi.business",
-        "elementType": "geometry",
+        "featureType": "poi.attraction",
+        "elementType": "all",
         "stylers": [
             {
-                "visibility": "on"
+                "visibility": "off"
             }
         ]
     },
     {
-        "featureType": "road.highway",
+        "featureType": "poi.park",
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#8b8984"
+                "hue": "#5500ff"
             },
             {
-                "lightness": "0"
-            }
-        ]
-    },
-    {
-        "featureType": "road.highway",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
                 "visibility": "off"
             }
         ]
     },
     {
-        "featureType": "road.highway",
-        "elementType": "labels.text",
+        "featureType": "road",
+        "elementType": "all",
         "stylers": [
             {
-                "visibility": "off"
+                "hue": "#ffffff"
             }
         ]
     },
     {
-        "featureType": "road.highway",
-        "elementType": "labels.text.fill",
+        "featureType": "road",
+        "elementType": "geometry.fill",
         "stylers": [
             {
                 "color": "#ffffff"
@@ -259,11 +220,32 @@ const mapStyle = [
         ]
     },
     {
+        "featureType": "road",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "labels.text.stroke",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
         "featureType": "road.highway",
-        "elementType": "labels.text.stroke",
+        "elementType": "geometry",
         "stylers": [
             {
-                "color": "#e5c163"
+                "lightness": 50
+            },
+            {
+                "hue": "#ffffff"
             }
         ]
     },
@@ -272,82 +254,46 @@ const mapStyle = [
         "elementType": "geometry",
         "stylers": [
             {
-                "color": "#000000"
-            },
-            {
-                "lightness": 18
+                "lightness": 20
             }
         ]
     },
     {
-        "featureType": "road.arterial",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#575757"
-            }
-        ]
-    },
-    {
-        "featureType": "road.arterial",
+        "featureType": "road.local",
         "elementType": "labels.text.fill",
         "stylers": [
             {
-                "color": "#9a9a9a"
+                "visibility": "on"
+            },
+            {
+                "color": "#b1b6c2"
             }
         ]
     },
     {
-        "featureType": "road.arterial",
+        "featureType": "road.local",
         "elementType": "labels.text.stroke",
         "stylers": [
             {
-                "color": "#2c2c2c"
-            }
-        ]
-    },
-    {
-        "featureType": "road.local",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "color": "#000000"
-            },
-            {
-                "lightness": 16
-            }
-        ]
-    },
-    {
-        "featureType": "road.local",
-        "elementType": "labels.text.fill",
-        "stylers": [
-            {
-                "color": "#5d5d5d"
+                "visibility": "off"
             }
         ]
     },
     {
         "featureType": "transit",
-        "elementType": "geometry",
+        "elementType": "all",
         "stylers": [
             {
-                "color": "#000000"
-            },
-            {
-                "lightness": 19
+                "visibility": "off"
             }
         ]
     },
     {
         "featureType": "water",
-        "elementType": "geometry",
+        "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#000000"
-            },
-            {
-                "lightness": 17
+                "color": "#dfe8f9"
             }
         ]
     }

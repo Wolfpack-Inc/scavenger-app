@@ -19,7 +19,8 @@ class App extends Component {
             currentImage: null,
             suggestionIndex: 0,
             suggestions: [],
-            suggestionPopupIndex: 1
+            suggestionPopupIndex: null,
+            suggestionOpen: false
         }
 
         console.log(API_HOST);
@@ -59,7 +60,7 @@ class App extends Component {
         console.log('hiero');
         
         this.setState({
-            suggestionPopupIndex: null
+            suggestionOpen: false
         })
     }
 
@@ -67,15 +68,15 @@ class App extends Component {
         console.log('suggestionIndex', suggestionIndex);
         
         this.setState({
-            suggestionPopupIndex: suggestionIndex
+            suggestionPopupIndex: suggestionIndex,
+            suggestionOpen: true
         })
     }
 
     render() {
-        const { currentLocation, suggestions, suggestionIndex, suggestionPopupIndex } = this.state;
+        const { currentLocation, suggestions, suggestionIndex, suggestionPopupIndex, suggestionOpen } = this.state;
 
         console.log('suggestions[suggestionPopupIndex]', suggestions[suggestionPopupIndex]);
-        
         
         return (
             <Fragment>
@@ -93,9 +94,11 @@ class App extends Component {
                             handleScroll={this.handleSuggestionScroll}
                             handleSuggestionClick={this.handleSuggestionClick}/>
                     </View>
-                    { suggestions.length > 0 && suggestionPopupIndex !== null &&
+                    { suggestionPopupIndex !== null &&
                         <Popup 
-                            suggestion={suggestions[suggestionPopupIndex]}
+                            suggestionOpen={suggestionOpen}
+                            suggestions={suggestions}
+                            suggestionPopupIndex={suggestionPopupIndex}
                             handleClose={this.handlePopupClose}/>
                     }
             </Fragment>

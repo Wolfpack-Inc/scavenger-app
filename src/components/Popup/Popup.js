@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import { Text, View, Image, Dimensions, TouchableWithoutFeedback } from 'react-native'
+import { Text, View, Image, Dimensions, TouchableWithoutFeedback, Animated } from 'react-native'
 import { BoxShadow } from 'react-native-shadow'
 
 import './Popup.scss';
@@ -22,40 +22,65 @@ export class Popup extends Component {
     constructor() {
         super();
 
+        this.fadeAnim = new Animated.Value(0);
+
         this.handleClose = this.handleClose.bind(this);
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.suggestionOpen !== this.props.suggestionOpen) {
+            console.log('Animating to', this.props.suggestionOpen ? 1 : 0);
+            
+            Animated.spring(this.fadeAnim, {
+                toValue: this.props.suggestionOpen ? 1 : 0,
+                duration: 900,
+                useNativeDriver: true
+            }).start();
+        }
+    }
+
     handleClose() {
-        this.props.handleClose();
         console.log('close');
+        this.props.handleClose();
     }
 
     render() {
-        const { suggestion } = this.props;
-        console.log(suggestion);
+        const { suggestions, suggestionPopupIndex, suggestionOpen } = this.props;
+
+        const suggestion = suggestions[suggestionPopupIndex]
         
         const { url, title, street } = suggestion
-
-        console.log(suggestion, url);
         
         return (
             <Fragment>
-                <TouchableWithoutFeedback onPress={this.handleClose}>
-                    <View styleName='click-away'/>
-                </TouchableWithoutFeedback>
-                
-                <View styleName='wrapper'>
-                    <View styleName='background'>
-                        <BoxShadow setting={shadowOpt}>
-                            <Image
-                                styleName='image'
-                                source={{uri: url}} />
-                        </BoxShadow>
-                        <Location street={street}/>
-                        <Text styleName='text'>{title}</Text>
-                        <Button/>
+                { suggestionOpen &&
+                    <TouchableWithoutFeedback onPress={this.handleClose}>
+                        <View styleName='click-away'/>
+                    </TouchableWithoutFeedback>
+                }
+
+                <Animated.View style={{
+                    transform: [{
+                        translateY: this.fadeAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [2 * (height / 3), 0]
+                        }),
+                    }]
+                }}>
+                    
+                    <View styleName='wrapper'>
+                        <View styleName='background'>
+                            <BoxShadow setting={shadowOpt}>
+                                <Image
+                                    styleName='image'
+                                    source={{uri: url}} />
+                            </BoxShadow>
+                            <Location street={street}/>
+                            <Text styleName='text'>{title}</Text>
+                            <Button/>
+                        </View>
                     </View>
-                </View>
+                </Animated.View>
             </Fragment>
         )
     }

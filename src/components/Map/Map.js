@@ -277,6 +277,15 @@ const mapStyle = [
         ]
     },
     {
+        "featureType": "road.local",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
         "featureType": "transit",
         "elementType": "all",
         "stylers": [

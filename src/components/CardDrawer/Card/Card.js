@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, TouchableWithoutFeedback } from 'react-native';
 import { BoxShadow } from 'react-native-shadow'
 
 import './Card.scss';
@@ -15,26 +15,41 @@ const shadowOpt = {
 	y:6
 }
 
-export class Card extends Component {
+class Card extends Component {
+    constructor() {
+        super();
+
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick() {
+        console.log('Clicked on', this.props.index);
+        this.props.handleClick(this.props.index)
+    }
+
     render() {
         const { image, text, last, street } = this.props;
-        
+
         return (
             <View 
                 styleName='card-wrapper'
-                style={{ marginRight: last ? 30 : 0 }}>
+                style={{ 
+                        marginRight: last ? 30 : 0,
+                    }}>
                 <BoxShadow setting={shadowOpt}>
-                    <View styleName='card'>
-                        <Image
-                            styleName='image' 
-                            source={{uri: image}} />
-                        <View styleName='content'>
-                            <Location street={street}/>
-                            <Text 
-                                styleName='text'
-                                numberOfLines={3}>{text}</Text>
+                    <TouchableWithoutFeedback onPress={this.handleClick}>
+                        <View styleName='card'>
+                            <Image
+                                styleName='image' 
+                                source={{uri: image}} />
+                            <View styleName='content'>
+                                <Location street={street}/>
+                                <Text 
+                                    styleName='text'
+                                    numberOfLines={3}>{text}</Text>
+                            </View>
                         </View>
-                    </View>
+                    </TouchableWithoutFeedback>
                 </BoxShadow>
             </View>
         )

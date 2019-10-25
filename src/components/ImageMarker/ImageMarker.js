@@ -14,13 +14,13 @@ export class ImageMarker extends Component {
 
         return (
             <Fragment>
-                <Circle 
+                {/* <Circle 
                     center={{longitude, latitude}} 
                     radius={radius}
                     fillColor='rgba(61, 132, 255, 0.1)'
                     strokeColor='rgba(61, 132, 255, 0.4)'
-                    strokeWidth={1.2}/>
-                <Marker
+                    strokeWidth={1.2}/> */}
+                <Marker 
                     flat={true}
                     coordinate={{longitude, latitude}}
                     anchor={{x: 0.5, y: 0.5}}>

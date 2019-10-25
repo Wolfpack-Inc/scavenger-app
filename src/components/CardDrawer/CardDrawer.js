@@ -16,7 +16,7 @@ export class CardDrawer extends Component {
 
     handleScroll(event) {
         const scrollX = event.nativeEvent.contentOffset.x
-        console.log(Math.round(scrollX / 330));
+
         this.props.handleScroll(Math.round(scrollX / 330))
     }
 
@@ -34,9 +34,11 @@ export class CardDrawer extends Component {
                         { suggestions.map((suggestion, index) => 
                             <Card 
                                 key={index}
+                                index={index}
                                 image={suggestion.url}
                                 text={suggestion.title}
                                 street={suggestion.street}
+                                handleClick={this.props.handleSuggestionClick}
                                 last={index === suggestions.length-1} />)
                         }
                 </ ScrollView>

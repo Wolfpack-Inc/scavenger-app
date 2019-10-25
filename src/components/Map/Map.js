@@ -24,26 +24,22 @@ class Map extends Component {
 
         // Center on a suggestion location when the user swipes the suggestion drawer
         if(prevProps.currentSuggestionCard != this.props.currentSuggestionCard) {
-            // Add a small timeout in order to fix a bug that map is not loaded yet
-            setTimeout(() => {
-                console.log(this.props.suggestions[this.props.currentSuggestionCard]);
-                
-                this.centerOn(this.props.suggestions[this.props.currentSuggestionCard], 0, 0.04)
-            }, 10);
+            this.centerOn(this.props.suggestions[this.props.currentSuggestionCard], 0, 0.01)
         }
     }
 
-    centerOn(location, offset=0, delta=0.08) {
+    centerOn(location, offset=0, delta=0.04) {
         const { longitude, latitude } = location;
         
-        // Animate to the center
-        this.map.animateToRegion({
-            latitude: latitude - offset,
-            longitude,
-            latitudeDelta: delta,
-            longitudeDelta: delta
-        });
-        
+        if (longitude && latitude) {
+            // Animate to the center
+            this.map.animateToRegion({
+                latitude: latitude - offset,
+                longitude,
+                latitudeDelta: delta,
+                longitudeDelta: delta
+            });
+        }
     }
 
     render() {

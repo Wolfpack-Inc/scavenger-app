@@ -6,6 +6,7 @@ import { API_HOST } from 'react-native-dotenv'
 import Map from 'src/components/Map/Map';
 import Location from 'src/components/Location/Location';
 import CardDrawer from 'src/components/CardDrawer/CardDrawer';
+import Popup from 'src/components/Popup/Popup';
 
 navigator.geolocation = require('@react-native-community/geolocation');
 
@@ -17,12 +18,17 @@ class App extends Component {
             currentLocation: null,
             currentImage: null,
             suggestionIndex: 0,
-            suggestions: []
+            suggestions: [],
+            suggestionPopupIndex: 1
         }
+
+        console.log(API_HOST);
 
         this.handleMovement = this.handleMovement.bind(this);
         this.fetchNearby = this.fetchNearby.bind(this);
         this.handleSuggestionScroll = this.handleSuggestionScroll.bind(this);
+        this.handlePopupClose = this.handlePopupClose.bind(this);
+        this.handleSuggestionClick = this.handleSuggestionClick.bind(this);
     }
 
     fetchNearby(longitude, latitude) {
@@ -49,11 +55,28 @@ class App extends Component {
         this.setState({suggestionIndex: imageIndex})
     }
 
-    render() {
-        const { currentLocation, suggestions, suggestionIndex } = this.state;
-        console.log('Hier', suggestionIndex);
+    handlePopupClose() {
+        console.log('hiero');
         
+        this.setState({
+            suggestionPopupIndex: null
+        })
+    }
 
+    handleSuggestionClick(suggestionIndex) {
+        console.log('suggestionIndex', suggestionIndex);
+        
+        this.setState({
+            suggestionPopupIndex: suggestionIndex
+        })
+    }
+
+    render() {
+        const { currentLocation, suggestions, suggestionIndex, suggestionPopupIndex } = this.state;
+
+        console.log('suggestions[suggestionPopupIndex]', suggestions[suggestionPopupIndex]);
+        
+        
         return (
             <Fragment>
                 <StatusBar
@@ -67,8 +90,14 @@ class App extends Component {
                             currentSuggestionCard={suggestionIndex}/>
                         <CardDrawer 
                             suggestions={suggestions}
-                            handleScroll={this.handleSuggestionScroll}/>
+                            handleScroll={this.handleSuggestionScroll}
+                            handleSuggestionClick={this.handleSuggestionClick}/>
                     </View>
+                    { suggestions.length > 0 && suggestionPopupIndex !== null &&
+                        <Popup 
+                            suggestion={suggestions[suggestionPopupIndex]}
+                            handleClose={this.handlePopupClose}/>
+                    }
             </Fragment>
         );
     }

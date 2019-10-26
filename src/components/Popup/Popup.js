@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import { Text, View, Image, Dimensions, TouchableWithoutFeedback, Animated } from 'react-native'
+import { Text, View, Image, Dimensions, TouchableWithoutFeedback, TouchableOpacity, Animated } from 'react-native'
 import { BoxShadow } from 'react-native-shadow'
 
 import './Popup.scss';
@@ -9,8 +9,7 @@ const { width, height } = Dimensions.get('window')
 const shadowOpt = {
 	width: .8 * width,
 	height:100,
-    color:"#e3e7ef",
-    // color: '#ff0000',
+    color:'#e3e7ef',
 	border: 15,
 	radius: 10,
 	opacity:1,
@@ -23,25 +22,57 @@ export class Popup extends Component {
         super();
 
         this.fadeAnim = new Animated.Value(0);
+        this.opacity = new Animated.Value(0);
 
         this.handleClose = this.handleClose.bind(this);
+        this.handleAccept = this.handleAccept.bind(this);
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.suggestionOpen !== this.props.suggestionOpen) {
-            console.log('Animating to', this.props.suggestionOpen ? 1 : 0);
-            
-            Animated.spring(this.fadeAnim, {
-                toValue: this.props.suggestionOpen ? 1 : 0,
-                duration: 900,
-                useNativeDriver: true
-            }).start();
+            // Opening suggestion popup
+            if (this.props.suggestionOpen) {
+                Animated.spring(this.fadeAnim, {
+                    toValue: 1,
+                    duration: 900,
+                    useNativeDriver: true
+                }).start();
+
+                Animated.timing(this.opacity, {
+                    toValue: 1,
+                    duration: 200,
+                    delay: 200,
+                    useNativeDriver: true
+                }).start();
+            }
+
+            // Closing suggestion popup
+            else {
+                Animated.spring(this.fadeAnim, {
+                    toValue: 0,
+                    duration: 1200,
+                    delay: 100,
+                    useNativeDriver: true
+                }).start();
+
+                Animated.timing(this.opacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }).start();
+            }
         }
     }
 
     handleClose() {
-        console.log('close');
         this.props.handleClose();
+    }
+
+    handleAccept() {
+        const { suggestions, suggestionPopupIndex, index } = this.props;
+        const suggestion = suggestions[suggestionPopupIndex]
+
+        this.props.acceptedImage(suggestion);
     }
 
     render() {
@@ -55,7 +86,7 @@ export class Popup extends Component {
             <Fragment>
                 { suggestionOpen &&
                     <TouchableWithoutFeedback onPress={this.handleClose}>
-                        <View styleName='click-away'/>
+                        <Animated.View style={{opacity: this.opacity}} styleName='click-away'/>
                     </TouchableWithoutFeedback>
                 }
 
@@ -77,10 +108,12 @@ export class Popup extends Component {
                             </BoxShadow>
                             <Location street={street}/>
                             <Text styleName='text'>{title}</Text>
-                            <Button/>
                         </View>
                     </View>
                 </Animated.View>
+                <Button 
+                    opacity={this.opacity}
+                    handleClick={this.handleAccept}/>
             </Fragment>
         )
     }
@@ -88,10 +121,21 @@ export class Popup extends Component {
 
 class Button extends Component {
     render() {
+        const { opacity } = this.props;
+        
         return (
-            <View styleName='accept-button'>
-                <Text styleName='label'>ACCEPT</Text>
-            </View>
+            <Animated.View
+                styleName='accept-button'
+                style={{
+                    opacity
+                }}>
+                <TouchableOpacity 
+                    onPress={this.props.handleClick}>
+                        <View>
+                            <Text styleName='label'>ACCEPTEER</Text>
+                        </View>
+                </TouchableOpacity>
+            </Animated.View>
         )
     }
 }

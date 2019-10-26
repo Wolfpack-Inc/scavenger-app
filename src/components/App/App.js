@@ -30,6 +30,7 @@ class App extends Component {
         this.handleSuggestionScroll = this.handleSuggestionScroll.bind(this);
         this.handlePopupClose = this.handlePopupClose.bind(this);
         this.handleSuggestionClick = this.handleSuggestionClick.bind(this);
+        this.acceptedImage = this.acceptedImage.bind(this);
     }
 
     fetchNearby(longitude, latitude) {
@@ -57,26 +58,28 @@ class App extends Component {
     }
 
     handlePopupClose() {
-        console.log('hiero');
-        
         this.setState({
             suggestionOpen: false
         })
     }
 
     handleSuggestionClick(suggestionIndex) {
-        console.log('suggestionIndex', suggestionIndex);
-        
         this.setState({
             suggestionPopupIndex: suggestionIndex,
             suggestionOpen: true
         })
     }
 
-    render() {
-        const { currentLocation, suggestions, suggestionIndex, suggestionPopupIndex, suggestionOpen } = this.state;
+    acceptedImage(image) {
+        this.setState({
+            currentImage: image
+        });
 
-        console.log('suggestions[suggestionPopupIndex]', suggestions[suggestionPopupIndex]);
+        this.handlePopupClose();
+    }
+
+    render() {
+        const { currentLocation, suggestions, suggestionIndex, suggestionPopupIndex, suggestionOpen, currentImage } = this.state;
         
         return (
             <Fragment>
@@ -88,17 +91,21 @@ class App extends Component {
                         <Map 
                             currentLocation={currentLocation} 
                             suggestions={suggestions}
-                            currentSuggestionCard={suggestionIndex}/>
-                        <CardDrawer 
-                            suggestions={suggestions}
-                            handleScroll={this.handleSuggestionScroll}
-                            handleSuggestionClick={this.handleSuggestionClick}/>
+                            currentSuggestionCard={suggestionIndex}
+                            lookingFor={currentImage}/>
+                        { !currentImage &&
+                            <CardDrawer 
+                                suggestions={suggestions}
+                                handleScroll={this.handleSuggestionScroll}
+                                handleSuggestionClick={this.handleSuggestionClick}/>
+                        }
                     </View>
                     { suggestionPopupIndex !== null &&
                         <Popup 
                             suggestionOpen={suggestionOpen}
                             suggestions={suggestions}
                             suggestionPopupIndex={suggestionPopupIndex}
+                            acceptedImage={this.acceptedImage}
                             handleClose={this.handlePopupClose}/>
                     }
             </Fragment>

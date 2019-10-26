@@ -24,7 +24,7 @@ class Map extends Component {
 
         // Center on a suggestion location when the user swipes the suggestion drawer
         if(prevProps.currentSuggestionCard != this.props.currentSuggestionCard) {
-            this.centerOn(this.props.suggestions[this.props.currentSuggestionCard], 0, 0.01)
+            this.centerOn(this.props.suggestions[this.props.currentSuggestionCard], 0.002, 0.01)
         }
     }
 
@@ -43,7 +43,7 @@ class Map extends Component {
     }
 
     render() {
-        const { currentLocation, suggestions } = this.props;
+        const { currentLocation, suggestions, lookingFor } = this.props;
 
         return (
             <View>
@@ -58,16 +58,21 @@ class Map extends Component {
                         longitude: 5.302172,
                         latitudeDelta: 0.0822,
                         longitudeDelta: 0.0421,
-                    }}
-                >
-                    { suggestions.map((suggestion, index) => 
+                    }}>
+                    { !lookingFor && suggestions.map((suggestion, index) => 
                         <ImageMarker 
                             key={index} 
                             longitude={suggestion.longitude} 
                             latitude={suggestion.latitude}
-                            image={suggestion.url}
-                            radius={suggestion.radius}/>
+                            image={suggestion.url}/>
                     )}
+                    { lookingFor &&
+                        <ImageMarker
+                            longitude={lookingFor.longitude} 
+                            latitude={lookingFor.latitude}
+                            image={lookingFor.url}
+                            radius={lookingFor.radius}/>
+                    }
                     <PersonMarker location={currentLocation}/>
                 </MapView> 
             </View>
@@ -80,6 +85,15 @@ export default Map;
 const mapStyle = [
     {
         "featureType": "all",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#f3f7fa"
+            }
+        ]
+    },
+    {
+        "featureType": "all",
         "elementType": "labels",
         "stylers": [
             {
@@ -87,6 +101,18 @@ const mapStyle = [
             },
             {
                 "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "administrative",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#f3f7fa"
             }
         ]
     },
@@ -145,6 +171,18 @@ const mapStyle = [
         "featureType": "landscape",
         "elementType": "all",
         "stylers": [
+            {
+                "color": "#f3f7fa"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
             {
                 "color": "#f3f7fa"
             }
@@ -221,7 +259,10 @@ const mapStyle = [
         "elementType": "geometry.stroke",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
+            },
+            {
+                "color": "#ffffff"
             }
         ]
     },
@@ -231,6 +272,9 @@ const mapStyle = [
         "stylers": [
             {
                 "visibility": "off"
+            },
+            {
+                "color": "#ff0000"
             }
         ]
     },
@@ -270,15 +314,6 @@ const mapStyle = [
     {
         "featureType": "road.local",
         "elementType": "labels.text.stroke",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "road.local",
-        "elementType": "geometry.stroke",
         "stylers": [
             {
                 "visibility": "off"

@@ -23,7 +23,6 @@ class Card extends Component {
     }
 
     handleClick() {
-        console.log('Clicked on', this.props.index);
         this.props.handleClick(this.props.index)
     }
 

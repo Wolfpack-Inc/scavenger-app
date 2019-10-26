@@ -50,7 +50,7 @@
     font-family: 'Roboto-Light';
     color: #33373d;
     font-size: 17px;
-    margin: 15px 10vw 30px 10vw;
+    margin: 15px 10vw 110px 10vw;
 }
 
 .accept-button {
@@ -59,7 +59,11 @@
     justify-content: center;
     align-items: center;
     border-radius: 30px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
+    position: absolute;
+    align-self: center;
+    bottom: 0;
+    z-index: 100;
 }
 
 .label {

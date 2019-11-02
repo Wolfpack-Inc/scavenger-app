@@ -1,0 +1,17 @@
+.score-wrapper {
+    position: absolute;
+    padding: 10px 25px;
+    right: 10px;
+    top: 10px;
+    min-width: 100px;
+    background-color: #fefeff;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+}
+
+.score {
+    color: #5c6880;
+    font-family: 'Roboto-Light';
+    font-size: 15px; 
+}

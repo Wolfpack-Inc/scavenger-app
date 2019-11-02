@@ -9,6 +9,7 @@ import CardDrawer from 'src/components/CardDrawer/CardDrawer';
 import Popup from 'src/components/Popup/Popup';
 import CurrentImage from 'src/components/CurrentImage/CurrentImage';
 import Crosshair from 'src/components/Crosshair/Crosshair';
+import Score from 'src/components/Score/Score';
 
 import DeviceInfo from 'react-native-device-info';
 
@@ -84,12 +85,9 @@ class App extends Component {
 
     handleMovement(location) {
         // If the user is moving and is not looking for an image yet, get initial suggestions
-        if (!this.state.points) {
+        if (this.state.suggestions.length === 0) {
             const { longitude, latitude } = location;
             this.fetchNearby(longitude, latitude);
-        }
-        else if (this.state.suggestions.length === 0) {
-            this.fetchSuggestions();   
         }
 
         // Store the current location
@@ -169,6 +167,7 @@ class App extends Component {
                                 handleSuggestionClick={this.handleSuggestionClick}/>
                         }
                     </View>
+                    <Score score={points}/>
                     { suggestionPopupIndex !== null &&
                         <Popup 
                             suggestionOpen={suggestionOpen}

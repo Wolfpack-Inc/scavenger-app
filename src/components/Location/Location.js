@@ -32,10 +32,9 @@ export class Location extends Component {
                 longitude
             })
         }, (error) => {
-            console.log(error)
+            console.warn(error)
         }, {
-            // maximumAge: 300000,
-            timeout: 1500,
+            timeout: 10000,
             enableHighAccuracy: true
         });
          

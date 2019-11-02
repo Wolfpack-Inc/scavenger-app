@@ -42,6 +42,10 @@ class Map extends Component {
         }
     }
 
+    onRegionChange(region) {
+        this.props.onRegionChange(region);
+    }
+
     render() {
         const { currentLocation, suggestions, lookingFor } = this.props;
 
@@ -58,7 +62,8 @@ class Map extends Component {
                         longitude: 5.302172,
                         latitudeDelta: 0.0822,
                         longitudeDelta: 0.0421,
-                    }}>
+                    }}
+                    onRegionChange={this.onRegionChange.bind(this)}>
                     { !lookingFor && suggestions.map((suggestion, index) => 
                         <ImageMarker 
                             key={index} 

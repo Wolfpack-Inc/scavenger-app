@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { StatusBar, View, Image } from 'react-native';
+import { StatusBar, View, TouchableOpacity, Text } from 'react-native';
 import './App.scss';
 import { API_HOST } from 'react-native-dotenv'
 
@@ -7,6 +7,8 @@ import Map from 'src/components/Map/Map';
 import Location from 'src/components/Location/Location';
 import CardDrawer from 'src/components/CardDrawer/CardDrawer';
 import Popup from 'src/components/Popup/Popup';
+import CurrentImage from 'src/components/CurrentImage/CurrentImage';
+import Crosshair from 'src/components/Crosshair/Crosshair';
 
 navigator.geolocation = require('@react-native-community/geolocation');
 
@@ -16,11 +18,12 @@ class App extends Component {
 
         this.state = {
             currentLocation: null,
-            currentImage: null,
+            currentImage: { "id": 9973, "latitude": 51.68706, "longitude": 5.29839, "radius": 68.0194648740342, "street": "Berewoutstraat", "title": "Gezien vanaf de Mariabrug over de Dommel in richting Vughterstraat. Links de Sint Janssingel, rechts de Westwal", "url": "http://denbosch.hosting.deventit.net/HttpHandler/icoon.ico?file=405429823" },
             suggestionIndex: 0,
             suggestions: [],
             suggestionPopupIndex: null,
-            suggestionOpen: false
+            suggestionOpen: false,
+            region: null
         }
 
         console.log(API_HOST);
@@ -31,6 +34,15 @@ class App extends Component {
         this.handlePopupClose = this.handlePopupClose.bind(this);
         this.handleSuggestionClick = this.handleSuggestionClick.bind(this);
         this.acceptedImage = this.acceptedImage.bind(this);
+        this.getDeviceId = this.getDeviceId.bind(this);
+    }
+
+    componentDidMount() {
+        this.getDeviceId();
+    }
+
+    getDeviceId() {
+        
     }
 
     fetchNearby(longitude, latitude) {
@@ -78,8 +90,14 @@ class App extends Component {
         this.handlePopupClose();
     }
 
+    onRegionChange(region) {
+        this.setState({
+            region
+        })
+    }
+
     render() {
-        const { currentLocation, suggestions, suggestionIndex, suggestionPopupIndex, suggestionOpen, currentImage } = this.state;
+        const { currentLocation, suggestions, suggestionIndex, suggestionPopupIndex, suggestionOpen, currentImage, region } = this.state;
         
         return (
             <Fragment>
@@ -92,7 +110,9 @@ class App extends Component {
                             currentLocation={currentLocation} 
                             suggestions={suggestions}
                             currentSuggestionCard={suggestionIndex}
-                            lookingFor={currentImage}/>
+                            lookingFor={currentImage}
+                            onRegionChange={this.onRegionChange.bind(this)}
+                            currentRegion={region}/>
                         { !currentImage &&
                             <CardDrawer 
                                 suggestions={suggestions}
@@ -108,8 +128,33 @@ class App extends Component {
                             acceptedImage={this.acceptedImage}
                             handleClose={this.handlePopupClose}/>
                     }
+                    { currentImage &&
+                        <Fragment>
+                            <Crosshair />
+                            <Button />
+                        </Fragment>
+                    }
+                    {currentImage &&
+                        <CurrentImage
+                            image={currentImage} />
+                    }
             </Fragment>
         );
+    }
+}
+
+class Button extends Component {
+    render() {
+        return (
+            <View styleName='accept-button'>
+                <TouchableOpacity
+                    onPress={this.props.handleClick}>
+                    <View>
+                        <Text styleName='label'>GEVONDEN</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        )
     }
 }
 

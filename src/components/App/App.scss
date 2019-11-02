@@ -2,3 +2,22 @@
     height: 100%; 
     background-color: green;
 }
+
+.accept-button {
+    background-color: #4784ff;
+    padding: 15px 50px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    position: absolute;
+    align-self: center;
+    bottom: 0;
+    z-index: 100;
+}
+
+.label {
+    color: white;
+    font-size: 12px;
+    font-family: 'Roboto-Bold';
+}

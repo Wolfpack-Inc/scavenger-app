@@ -10,6 +10,11 @@ class Map extends Component {
     constructor() {
         super();
 
+        this.state = {
+            recordRegion: false,
+            region: null
+        }
+
         this.centerOn = this.centerOn.bind(this);
     }
 
@@ -43,14 +48,36 @@ class Map extends Component {
     }
 
     onRegionChange(region) {
-        this.props.onRegionChange(region);
+        if (this.state.recordRegion && this.props.lookingFor) {
+            this.setState({
+                region
+            })
+        }
+    }
+
+    onPanDragStart() {
+        this.setState({
+            recordRegion: true
+        })
+    }
+
+    onPanDragStop() {
+        this.setState({
+            recordRegion: false
+        })
+        this.props.onRegionChange(this.state.region);
     }
 
     render() {
         const { currentLocation, suggestions, lookingFor } = this.props;
 
         return (
-            <View>
+            <View
+                onMoveShouldSetResponder={() => {
+                    this.onPanDragStart()
+                    return true
+                }}
+                onResponderRelease={this.onPanDragStop.bind(this)}>
                 <MapView 
                     style={{
                         height: '100%'

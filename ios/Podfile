@@ -40,6 +40,8 @@ target 'ScavengerHunt' do
 
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
   target 'ScavengerHuntTests' do
     inherit! :search_paths
     # Pods for testing

@@ -10,6 +10,8 @@ import Popup from 'src/components/Popup/Popup';
 import CurrentImage from 'src/components/CurrentImage/CurrentImage';
 import Crosshair from 'src/components/Crosshair/Crosshair';
 
+import DeviceInfo from 'react-native-device-info';
+
 navigator.geolocation = require('@react-native-community/geolocation');
 
 class App extends Component {
@@ -17,46 +19,77 @@ class App extends Component {
         super();
 
         this.state = {
+            deviceId: null,
             currentLocation: null,
-            currentImage: { "id": 9973, "latitude": 51.68706, "longitude": 5.29839, "radius": 68.0194648740342, "street": "Berewoutstraat", "title": "Gezien vanaf de Mariabrug over de Dommel in richting Vughterstraat. Links de Sint Janssingel, rechts de Westwal", "url": "http://denbosch.hosting.deventit.net/HttpHandler/icoon.ico?file=405429823" },
+            currentImage: null,
             suggestionIndex: 0,
             suggestions: [],
             suggestionPopupIndex: null,
             suggestionOpen: false,
-            region: null
+            region: null,
+            points: null
         }
 
         console.log(API_HOST);
 
         this.handleMovement = this.handleMovement.bind(this);
         this.fetchNearby = this.fetchNearby.bind(this);
+        this.fetchSuggestions = this.fetchSuggestions.bind(this);
         this.handleSuggestionScroll = this.handleSuggestionScroll.bind(this);
         this.handlePopupClose = this.handlePopupClose.bind(this);
         this.handleSuggestionClick = this.handleSuggestionClick.bind(this);
         this.acceptedImage = this.acceptedImage.bind(this);
-        this.getDeviceId = this.getDeviceId.bind(this);
+        this.startup = this.startup.bind(this);
     }
 
     componentDidMount() {
-        this.getDeviceId();
+        this.startup();
     }
 
-    getDeviceId() {
+    startup() {
+        // Get the id of the device, this will be the user id
+        const deviceId = DeviceInfo.getUniqueId();
         
+        this.setState({
+            deviceId 
+        });
+
+        // Get or get the user
+        fetch(`${API_HOST}/create/user/${deviceId}`)
+            .then(data => fetch(`${API_HOST}/session-points/${deviceId}`))
+            .then(response => response.json() )
+            .then(data => this.setState({points: data['points']}))
+            .catch(error => console.error(error));
     }
 
     fetchNearby(longitude, latitude) {
+        console.log('fetching nearby');
+        
         fetch(`${API_HOST}/images/initial/${longitude}/${latitude}`)
-            .then(response => response.json() )
+            .then(response => response.json())
             .then(data => this.setState({suggestions: data}) )
             .catch(error => console.error(error));
     }
 
+    fetchSuggestions() {
+        console.log('fetching suggestions');
+
+        fetch(`${API_HOST}/suggestions/${this.state.deviceId}`)
+            .then(response => response.json())
+            .then(suggestions => this.setState({
+                suggestions,
+                currentImage: null
+            }))
+    }
+
     handleMovement(location) {
         // If the user is moving and is not looking for an image yet, get initial suggestions
-        if (!this.state.currentImage) {
+        if (!this.state.points) {
             const { longitude, latitude } = location;
             this.fetchNearby(longitude, latitude);
+        }
+        else if (this.state.suggestions.length === 0) {
+            this.fetchSuggestions();   
         }
 
         // Store the current location
@@ -91,14 +124,31 @@ class App extends Component {
     }
 
     onRegionChange(region) {
-        this.setState({
-            region
-        })
+        // Only update the region when searching for a image
+        if (this.state.currentImage) {
+            this.setState({
+                region
+            })
+        }
+    }
+
+    handleFound() {
+        const { deviceId, currentImage, region } = this.state;
+        const { longitude, latitude } = region
+
+        console.log(deviceId, currentImage['id'], longitude, latitude);
+
+        fetch(`${API_HOST}/save-taken-image/${deviceId}/${currentImage['id']}/${longitude}/${latitude}`)
+            .then(data => fetch(`${API_HOST}/session-points/${deviceId}`))
+            .then(response => response.json())
+            .then(data => this.setState({points: data['points']}))
+            .then(data => this.fetchSuggestions())
+            .catch(error => console.error(error));
     }
 
     render() {
-        const { currentLocation, suggestions, suggestionIndex, suggestionPopupIndex, suggestionOpen, currentImage, region } = this.state;
-        
+        const { currentLocation, suggestions, suggestionIndex, suggestionPopupIndex, suggestionOpen, currentImage, region, points } = this.state;
+
         return (
             <Fragment>
                 <StatusBar
@@ -111,8 +161,7 @@ class App extends Component {
                             suggestions={suggestions}
                             currentSuggestionCard={suggestionIndex}
                             lookingFor={currentImage}
-                            onRegionChange={this.onRegionChange.bind(this)}
-                            currentRegion={region}/>
+                            onRegionChange={this.onRegionChange.bind(this)}/>
                         { !currentImage &&
                             <CardDrawer 
                                 suggestions={suggestions}
@@ -131,7 +180,7 @@ class App extends Component {
                     { currentImage &&
                         <Fragment>
                             <Crosshair />
-                            <Button />
+                            <Button handleClick={this.handleFound.bind(this)}/>
                         </Fragment>
                     }
                     {currentImage &&

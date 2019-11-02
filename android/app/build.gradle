@@ -178,12 +178,21 @@ android {
     }
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.getRequested().getGroup() == 'com.google.android.gms') {
+            details.useVersion('12.0.0')
+        }
+    }
+}
+
 dependencies {
+    implementation project(':react-native-device-info')
     implementation project(':react-native-svg')
     implementation project(':@react-native-community_geolocation')
     implementation(project(':react-native-maps')){        
         exclude group: 'com.google.android.gms', module: 'play-services-base'        
-        exclude group: 'com.google.android.gms', module: 'play-services-maps'    
+        exclude group: 'com.google.android.gms', module: 'play-services-maps'
         }
     implementation 'com.google.android.gms:play-services-base:12.0.0'
     implementation 'com.google.android.gms:play-services-maps:12.0.0'

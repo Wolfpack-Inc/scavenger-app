@@ -26,42 +26,54 @@ export class Popup extends Component {
 
         this.handleClose = this.handleClose.bind(this);
         this.handleAccept = this.handleAccept.bind(this);
+        this.open = this.open.bind(this);
+        this.close = this.close.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.props.suggestionOpen) {
+            this.open();
+        }
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.suggestionOpen !== this.props.suggestionOpen) {
-            // Opening suggestion popup
-            if (this.props.suggestionOpen) {
-                Animated.spring(this.fadeAnim, {
-                    toValue: 1,
-                    duration: 900,
-                    useNativeDriver: true
-                }).start();
-
-                Animated.timing(this.opacity, {
-                    toValue: 1,
-                    duration: 200,
-                    delay: 200,
-                    useNativeDriver: true
-                }).start();
-            }
-
-            // Closing suggestion popup
-            else {
-                Animated.spring(this.fadeAnim, {
-                    toValue: 0,
-                    duration: 1200,
-                    delay: 100,
-                    useNativeDriver: true
-                }).start();
-
-                Animated.timing(this.opacity, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: true
-                }).start();
-            }
+            this.props.suggestionOpen ? this.open() : this.close()
         }
+    }
+
+    open() {
+        console.log('opening');
+
+        Animated.spring(this.fadeAnim, {
+            toValue: 1,
+            duration: 900,
+            useNativeDriver: true
+        }).start();
+
+        Animated.timing(this.opacity, {
+            toValue: 1,
+            duration: 200,
+            delay: 200,
+            useNativeDriver: true
+        }).start();
+    }
+
+    close() {
+        console.log('closing');
+        
+        Animated.spring(this.fadeAnim, {
+            toValue: 0,
+            duration: 1200,
+            delay: 100,
+            useNativeDriver: true
+        }).start();
+
+        Animated.timing(this.opacity, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: true
+        }).start();
     }
 
     handleClose() {

@@ -44,3 +44,21 @@
     font-size: 15px;
     margin: 10px 20px 3px 8px;
 }
+
+.score {
+    position: absolute;
+    left: -4px;
+    bottom: -4px;
+    align-self: flex-end;
+    background-color: rgba(71, 132, 255, 1);
+    padding: 3px 10px;
+    border-radius: 4px;
+    flex-direction: row;
+}
+
+.score-points {
+    color: #fff;
+    font-family: 'Roboto-BlackItalic';
+    font-size: 12px;
+    margin-bottom: 2px;
+}

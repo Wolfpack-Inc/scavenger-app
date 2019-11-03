@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { StatusBar, View, TouchableOpacity, Text } from 'react-native';
 import './App.scss';
-import { API_HOST } from 'react-native-dotenv'
+
+import { API_HOST } from 'react-native-dotenv';
 
 import Map from 'src/components/Map/Map';
 import Location from 'src/components/Location/Location';
@@ -30,8 +31,6 @@ class App extends Component {
             region: null,
             points: null
         }
-
-        console.log(API_HOST);
 
         this.handleMovement = this.handleMovement.bind(this);
         this.fetchNearby = this.fetchNearby.bind(this);
@@ -64,8 +63,6 @@ class App extends Component {
     }
 
     fetchNearby(longitude, latitude) {
-        console.log('fetching nearby');
-        
         fetch(`${API_HOST}/images/initial/${longitude}/${latitude}`)
             .then(response => response.json())
             .then(data => this.setState({suggestions: data}) )

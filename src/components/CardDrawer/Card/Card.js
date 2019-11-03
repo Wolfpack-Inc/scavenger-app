@@ -27,7 +27,7 @@ class Card extends Component {
     }
 
     render() {
-        const { image, text, last, street } = this.props;
+        const { image, text, last, street, points } = this.props;
 
         return (
             <View 
@@ -50,6 +50,7 @@ class Card extends Component {
                         </View>
                     </TouchableWithoutFeedback>
                 </BoxShadow>
+                            <Score score={points}/>
             </View>
         )
     }
@@ -65,6 +66,21 @@ class Location extends Component {
                 <Text 
                     styleName='location-label'
                     numberOfLines={1}>{street}</Text>
+            </View>
+        )
+    }
+}
+
+class Score extends Component {
+    render() {
+        const { score } = this.props;
+        
+        return (
+            <View 
+                styleName='score'>
+                <Text 
+                    styleName='score-points'
+                    numberOfLines={1}>{score}</Text>
             </View>
         )
     }

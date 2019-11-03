@@ -38,6 +38,7 @@ export class CardDrawer extends Component {
                                 image={suggestion.url}
                                 text={suggestion.title}
                                 street={suggestion.street}
+                                points={suggestion.points}
                                 handleClick={this.props.handleSuggestionClick}
                                 last={index === suggestions.length-1} />)
                         }

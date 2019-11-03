@@ -51,16 +51,16 @@ export class Score extends Component {
                         easing='linear'
                         onComplete={this.counterDone.bind(this)}
                         style={{
-                            color: '#5c6880',
-                            fontFamily: 'Roboto-Black',
+                            color: '#fff',
+                            fontFamily: 'Roboto-BlackItalic',
                             fontSize: 24
                         }}/>
 
                     :
 
                     <Text style={{
-                        color: '#5c6880',
-                        fontFamily: 'Roboto-Black',
+                        color: '#fff',
+                        fontFamily: 'Roboto-BlackItalic',
                         fontSize: 24
                     }}>{score}</Text>
                 }

@@ -43,8 +43,6 @@ export class Popup extends Component {
     }
 
     open() {
-        console.log('opening');
-
         Animated.spring(this.fadeAnim, {
             toValue: 1,
             duration: 900,
@@ -60,8 +58,6 @@ export class Popup extends Component {
     }
 
     close() {
-        console.log('closing');
-        
         Animated.spring(this.fadeAnim, {
             toValue: 0,
             duration: 1200,
@@ -92,7 +88,7 @@ export class Popup extends Component {
 
         const suggestion = suggestions[suggestionPopupIndex]
         
-        const { url, title, street } = suggestion
+        const { url, title, street, points } = suggestion
         
         return (
             <Fragment>
@@ -118,7 +114,10 @@ export class Popup extends Component {
                                     styleName='image'
                                     source={{uri: url}} />
                             </BoxShadow>
-                            <Location street={street}/>
+                            <View styleName='tag-wrapper'>
+                                <Location street={street}/>
+                                <Score score={points}/>
+                            </View>
                             <Text styleName='text'>{title}</Text>
                         </View>
                     </View>
@@ -162,6 +161,24 @@ class Location extends Component {
                 <Text 
                     styleName='location-label'
                     numberOfLines={1}>{street}</Text>
+            </View>
+        )
+    }
+}
+
+class Score extends Component {
+    render() {
+        const { score } = this.props;
+        
+        return (
+            <View 
+                styleName='score'>
+                <Text 
+                    styleName='score-label'
+                    numberOfLines={1}>score</Text>
+                <Text 
+                    styleName='score-points'
+                    numberOfLines={1}>{score}</Text>
             </View>
         )
     }

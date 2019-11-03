@@ -30,13 +30,39 @@
     border-radius: 8px;
 }
 
+.tag-wrapper {
+    flex-direction: row;
+    padding: 15px 0 0 0;
+}
+
+.score {
+    align-self: flex-end;
+    background-color: #4784ff;
+    padding: 4px 12px 5px;
+    border-radius: 4px;
+    margin-right: 15px;
+    flex-direction: row;
+}
+
+.score-label {
+    color: #fff;
+    font-family: 'Roboto-Light';
+    font-size: 15px; 
+    margin-right: 5px;
+    margin-bottom: 2px;
+}
+
+.score-points {
+    color: #fff;
+    font-family: 'Roboto-BlackItalic';
+    font-size: 15px; 
+}
+
 .location {
-    margin-top: 15px;
-    margin-left: 10vw;
-    align-self: flex-start;
     background-color: #ebf0f9;
     padding: 4px 12px 5px;
     border-radius: 4px;
+    margin-right: 15px;
 }
 
 .location-label {

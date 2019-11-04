@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { StatusBar, View, TouchableOpacity, Text } from 'react-native';
+import { StatusBar, View, TouchableOpacity, Text, BackHandler } from 'react-native';
 import './App.scss';
 
 import { API_HOST } from 'react-native-dotenv';
@@ -21,7 +21,6 @@ class App extends Component {
         super();
 
         console.log(API_HOST);
-        
 
         this.state = {
             deviceId: null,
@@ -48,6 +47,16 @@ class App extends Component {
 
     componentDidMount() {
         this.startup();
+
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.state.suggestionOpen) {
+                this.setState({
+                    suggestionOpen: false
+                })
+            }
+            
+            return true;
+        });
     }
 
     startup() {

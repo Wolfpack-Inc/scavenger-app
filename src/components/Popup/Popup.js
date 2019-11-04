@@ -102,7 +102,7 @@ export class Popup extends Component {
                     transform: [{
                         translateY: this.fadeAnim.interpolate({
                         inputRange: [0, 1],
-                        outputRange: [2 * (height / 3), 0]
+                        outputRange: [height, 0]
                         }),
                     }]
                 }}>

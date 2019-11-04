@@ -20,6 +20,9 @@ class App extends Component {
     constructor() {
         super();
 
+        console.log(API_HOST);
+        
+
         this.state = {
             deviceId: null,
             currentLocation: null,
@@ -29,7 +32,8 @@ class App extends Component {
             suggestionPopupIndex: null,
             suggestionOpen: false,
             region: null,
-            points: null
+            points: null,
+            foundAnImage: false //If the user has found an image
         }
 
         this.handleMovement = this.handleMovement.bind(this);
@@ -70,8 +74,6 @@ class App extends Component {
     }
 
     fetchSuggestions() {
-        console.log('fetching suggestions');
-
         fetch(`${API_HOST}/suggestions/${this.state.deviceId}`)
             .then(response => response.json())
             .then(suggestions => this.setState({
@@ -82,7 +84,7 @@ class App extends Component {
 
     handleMovement(location) {
         // If the user is moving and is not looking for an image yet, get initial suggestions
-        if (this.state.suggestions.length === 0) {
+        if (!this.state.foundAnImage) {
             const { longitude, latitude } = location;
             this.fetchNearby(longitude, latitude);
         }
@@ -138,6 +140,7 @@ class App extends Component {
             .then(response => response.json())
             .then(data => this.setState({points: data['points']}))
             .then(data => this.fetchSuggestions())
+            .then(data => this.setState({foundAnImage: true}))
             .catch(error => console.error(error));
     }
 

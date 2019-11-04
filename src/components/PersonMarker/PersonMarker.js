@@ -22,7 +22,7 @@ export class PersonMarker extends Component {
                     <ImageBackground
                         styleName='pictogram'
                         imageStyle={{ borderRadius: 12 }}
-                        source={{uri: 'https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80'}}
+                        source={{ uri: 'https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3300&q=80'}}
                         onLoad={() => this.forceUpdate()}
                         onLayout={() => this.setState({initialRender: false})}
                         key={`${this.state.initialRender}`} />

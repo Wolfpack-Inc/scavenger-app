@@ -29,7 +29,7 @@ class Map extends Component {
 
         // Center on a suggestion location when the user swipes the suggestion drawer
         if(prevProps.currentSuggestionCard != this.props.currentSuggestionCard) {
-            this.centerOn(this.props.suggestions[this.props.currentSuggestionCard], 0.002, 0.01)
+            this.centerOn(this.props.suggestions[this.props.currentSuggestionCard], 0.0, 0.002)
         }
     }
 

@@ -15,7 +15,7 @@
     "babel-plugin-react-native-classname-to-style": "^1.2.2",
     "babel-plugin-react-native-platform-specific-extensions": "^1.1.1",
     "babel-plugin-react-native-stylename-to-style": "^0.13.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "react": "16.9.0",
     "react-native": "0.61.2",
     "react-native-counter": "git+https://github.com/Kerumen/react-native-counter#8d25ef92488b03e1276e102f81cf5a8051d34157",
